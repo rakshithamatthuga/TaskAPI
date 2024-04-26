@@ -103,7 +103,16 @@ app.delete( '/tasks/:id', (req,res)=>{
     console.log(originalSize.length)
     if(originalSize>taskLists.length) {
             res.send(204).send( {'message': 'Deleted Successfully'} );
+            taskLists.forEach((object,index)=>{
+                object.id=index+1;
+            })
     } else {
             res.status(404).send( {'message':'No such Task exists'} ).end()
     }
     });
+/* ...........
+api:DeleteTaskBy Id
+method: POST
+resource: /tasks
+params: Task Id
+*/  
