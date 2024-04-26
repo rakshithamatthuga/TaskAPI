@@ -21,7 +21,7 @@ const taskLists = [
         description: "Create a new project using Magic",
         priority:"high",
         completed: false,
-        creationDate:"2024-04-26T11:10:41.973Z"
+        creationDate:"2024-04-26T17:00:00.000Z"
     },
     {
         id: 2,
@@ -29,7 +29,7 @@ const taskLists = [
         description: "Timeout to study apart from work schedule",
         priority:"low",
         completed: false,
-        creationDate:"2026-04-26T11:10:41.973Z"
+        creationDate:"2026-04-26T17:00:00.000Z"
 
     },
     {
@@ -38,7 +38,7 @@ const taskLists = [
         description: "1 liter per 3 hours",
         priority:"low",
         completed: false,
-        creationDate:"2022-04-26T11:10:41.973Z"
+        creationDate:"2022-04-26T17:00:00.000Z"
 
     }
     ,{
@@ -47,7 +47,7 @@ const taskLists = [
         description: "1 liter per 3 hours",
         priority:"medium",
         completed: false,
-        creationDate:"2021-04-26T11:10:41.973Z"
+        creationDate:"2021-04-26T17:00:00.000Z"
 
     },
     {
@@ -56,7 +56,7 @@ const taskLists = [
         description: "1 liter per 3 hours",
         priority:"high",
         completed: false,
-        creationDate:"2027-04-26T11:10:41.973Z"
+        creationDate:"2027-04-26T17:00:00.000Z"
 
     }
 ];
@@ -80,19 +80,43 @@ resource: tasks
 
 app.get('/tasks', (req,res)=>{
     let sortBy=req.query.sortBy
+    let priority=req.query.priority
     if(sortBy){
         let sortArray=taskLists
         if(sortBy=='desc'){
             taskLists.sort(function(a, b)
-            {           return res.status(200).send(b.creationDate - a.creationDate)           });
+            { 
+                return new Date(b.creationDate) - new Date(a.creationDate) 
+            });
+            return res.status(200).send(taskLists)
+         }
+        else if(sortBy=='asc'){
+            taskLists.sort(function(a, b)
+            {               return new Date(a.creationDate) - new Date(b.creationDate)
+            });
         }
         else{
-            taskLists.sort(function(a, b)
-            {           return res.status(200).send(a.creationDate - b.creationDate)            });
-        
+            return res.status(200).send(taskLists)
 
         }
-        res.status(200).send()
+    }
+    if(priority){
+        if(priority=='low'){
+            var lowPriorityTasks=tasksList.filter((item)=> item.priority =='low')
+            return res.status(200).send(lowPriorityTasks)
+        }
+       else if(priority=='medium'){
+            var lowPriorityTasks=tasksList.filter((item)=> item.priority =='medium')
+            return res.status(200).send(lowPriorityTasks)
+        }
+        else if(priority=='high'){
+            var lowPriorityTasks=tasksList.filter((item)=> item.priority =='high')
+            return res.status(200).send(lowPriorityTasks)
+        }
+        else{
+            return res.status(200).send(tasksList)
+        }
+
     }
     res.status(200).send(taskLists)
 });
