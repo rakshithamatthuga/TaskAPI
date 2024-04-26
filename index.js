@@ -220,7 +220,7 @@ app.delete( '/tasks/:id', (req,res)=>{
                 object.id=index+1;
             })
     } else {
-            res.status(404).send( {'message':'No such Task exists'} ).end()
+            res.status(404).send( {'message':'No such Task exists'} )
     }
     });
 
