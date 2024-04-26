@@ -1,0 +1,22 @@
+{
+  "name": "assignment-1-26th-april",
+  "version": "1.0.0",
+  "description": "Assignment-Task CRUD APIs 26th April",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rakshithamatthuga/TaskAPI.git"
+  },
+  "author": "Rakshitha S",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rakshithamatthuga/TaskAPI/issues"
+  },
+  "homepage": "https://github.com/rakshithamatthuga/TaskAPI#readme",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
