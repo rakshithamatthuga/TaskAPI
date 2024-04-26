@@ -19,18 +19,35 @@ const taskLists = [
         id: 1,
         title: "Create a new project",
         description: "Create a new project using Magic",
+        priority:"high",
         completed: false
     },
     {
         id: 2,
         title: "Timeout to learn yourself",
         description: "Timeout to study apart from work schedule",
+        priority:"low",
         completed: false
     },
     {
         id: 3,
         title: "Drink water",
         description: "1 liter per 3 hours",
+        priority:"low",
+        completed: false
+    }
+    ,{
+        id: 4,
+        title: "Drink water",
+        description: "1 liter per 3 hours",
+        priority:"medium",
+        completed: false
+    },
+    {
+        id: 5,
+        title: "Drink water",
+        description: "1 liter per 3 hours",
+        priority:"high",
         completed: false
     }
 ];
@@ -79,12 +96,20 @@ resource: /tasks
 */
 app.post("/tasks",(req,res)=> {
      let newTask = req.body;
-     if(!newTask.title || !newTask.description || !newTask.completed){
-       return res.status(400).json({"error": "Missing parameters either title or description"})
+     if(!newTask.title || !newTask.description || !newTask.completed || !newTask.priority){
+       if(typeof newTask.completed != "boolean"){
+        return res.status(400).json({"error": "Missing title or description or completed"})
+       }
+      
      }
      else{
+        if(typeof newTask.completed != "boolean"){
+            return res.status(400).json({"error": "Bad Request"})
+           }
+
         let newId=taskLists.length+1;
-        taskLists.push({'id':newId,'title':newTask.title,"description":newTask.description,"completed":newTask.completed})
+        const date = new Date();
+        taskLists.push({'id':newId,'title':newTask.title,"description":newTask.description,"completed":newTask.completed,"createdDate":date})
         return res.status(201).json({...newTask, id:newId}).end();
      }
     });
@@ -111,8 +136,35 @@ app.delete( '/tasks/:id', (req,res)=>{
     }
     });
 /* ...........
-api:DeleteTaskBy Id
-method: POST
-resource: /tasks
+api:UpdateTask Id
+method: PUT
+resource: /tasks/Task Id
 params: Task Id
 */  
+app.put('/tasks/:id', (req, res) => {
+    const taskId = parseInt(req.params.id);
+    const updatedTask = req.body;
+
+    if (updatedTask) {
+        let taskToUpdate = taskLists.find(task => task.id === taskId);
+        if (taskToUpdate) {
+            if (updatedTask.completed && typeof updatedTask.completed !='boolean') {
+                res.status(400).send({'message':'Error! Only Boolean type supported'})
+            }
+            if (updatedTask.title) {
+                taskToUpdate.title = updatedTask.title;
+            }
+            if (updatedTask.description) {
+                taskToUpdate.description = updatedTask.description;
+            }
+            if (updatedTask.completed !== undefined && typeof updatedTask.completed === 'boolean') {
+                taskToUpdate.completed = updatedTask.completed;
+            }
+            return res.status(200).send({ 'message': 'Updated' });
+        } else {
+            return res.status(404).send({ 'message': 'Task not found' });
+        }
+    } else {
+        return res.status(400).send({ 'message': 'Invalid data sent to update the task.' });
+    }
+});
