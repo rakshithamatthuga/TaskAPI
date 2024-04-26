@@ -20,35 +20,44 @@ const taskLists = [
         title: "Create a new project",
         description: "Create a new project using Magic",
         priority:"high",
-        completed: false
+        completed: false,
+        creationDate:"2024-04-26T11:10:41.973Z"
     },
     {
         id: 2,
         title: "Timeout to learn yourself",
         description: "Timeout to study apart from work schedule",
         priority:"low",
-        completed: false
+        completed: false,
+        creationDate:"2026-04-26T11:10:41.973Z"
+
     },
     {
         id: 3,
         title: "Drink water",
         description: "1 liter per 3 hours",
         priority:"low",
-        completed: false
+        completed: false,
+        creationDate:"2022-04-26T11:10:41.973Z"
+
     }
     ,{
         id: 4,
         title: "Drink water",
         description: "1 liter per 3 hours",
         priority:"medium",
-        completed: false
+        completed: false,
+        creationDate:"2021-04-26T11:10:41.973Z"
+
     },
     {
         id: 5,
         title: "Drink water",
         description: "1 liter per 3 hours",
         priority:"high",
-        completed: false
+        completed: false,
+        creationDate:"2027-04-26T11:10:41.973Z"
+
     }
 ];
 
@@ -70,6 +79,21 @@ resource: tasks
 */
 
 app.get('/tasks', (req,res)=>{
+    let sortBy=req.query.sortBy
+    if(sortBy){
+        let sortArray=taskLists
+        if(sortBy=='desc'){
+            taskLists.sort(function(a, b)
+            {           return res.status(200).send(b.creationDate - a.creationDate)           });
+        }
+        else{
+            taskLists.sort(function(a, b)
+            {           return res.status(200).send(a.creationDate - b.creationDate)            });
+        
+
+        }
+        res.status(200).send()
+    }
     res.status(200).send(taskLists)
 });
 
@@ -97,9 +121,8 @@ resource: /tasks
 app.post("/tasks",(req,res)=> {
      let newTask = req.body;
      if(!newTask.title || !newTask.description || !newTask.completed || !newTask.priority){
-       if(typeof newTask.completed != "boolean"){
         return res.status(400).json({"error": "Missing title or description or completed"})
-       }
+       
       
      }
      else{
@@ -109,7 +132,8 @@ app.post("/tasks",(req,res)=> {
 
         let newId=taskLists.length+1;
         const date = new Date();
-        taskLists.push({'id':newId,'title':newTask.title,"description":newTask.description,"completed":newTask.completed,"createdDate":date})
+        newTask.creationDate = date;
+        taskLists.push({'id':newId,'title':newTask.title,"description":newTask.description,"completed":newTask.completed,"creationDate":newTask.creationDate})
         return res.status(201).json({...newTask, id:newId}).end();
      }
     });
