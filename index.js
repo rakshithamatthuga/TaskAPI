@@ -80,47 +80,77 @@ resource: tasks
 
 app.get('/tasks', (req,res)=>{
     let sortBy=req.query.sortBy
-    let priority=req.query.priority
+    let completedStatus=req.query.completed
+    const sortArray=[...taskLists]
+    console.log(completedStatus)
+    console.log(typeof completedStatus)
     if(sortBy){
-        let sortArray=taskLists
-        if(sortBy=='desc'){
+        if(sortBy==='desc'){
             taskLists.sort(function(a, b)
             { 
                 return new Date(b.creationDate) - new Date(a.creationDate) 
             });
-            return res.status(200).send(taskLists)
+           return res.status(200).send(taskLists)
          }
-        else if(sortBy=='asc'){
-            taskLists.sort(function(a, b)
-            {               return new Date(a.creationDate) - new Date(b.creationDate)
+        else if(sortBy==='asc'){
+            sortArray.sort(function(a, b) {
+                return new Date(a.creationDate) - new Date(b.creationDate)
             });
-        }
-        else{
+            return res.status(200).send(sortArray)
+            
+         } 
+         else{
             return res.status(200).send(taskLists)
 
         }
+
+        }
+    else if(completedStatus){
+    console.log(completedStatus);
+     if(completedStatus === "true"){
+        var completedStatusTrue=taskLists.filter(task => task.completed == true);
+        return res.status(200).send(completedStatusTrue)
     }
+     else if(completedStatus=='false'){
+        var completedStatusTrue=taskLists.filter(task => task.completed == false);
+        return res.status(200).send(completedStatusTrue)
+    }
+    else{
+        return res.send('Invalid query parameter for "completed"')
+    }
+  }
+
+    else{
+        return res.status(200).send(taskLists)
+    }
+});
+
+/* ...........
+api:sortByPriority
+method: get
+resource: tasks/priority
+params: :level
+*/
+app.get('/tasks/priority/:level',(req,res)=>{
+    let priority=req.params.level
     if(priority){
         if(priority=='low'){
-            var lowPriorityTasks=tasksList.filter((item)=> item.priority =='low')
+            var lowPriorityTasks=taskLists.filter((item)=> item.priority =='low')
             return res.status(200).send(lowPriorityTasks)
         }
        else if(priority=='medium'){
-            var lowPriorityTasks=tasksList.filter((item)=> item.priority =='medium')
+            var lowPriorityTasks=taskLists.filter((item)=> item.priority =='medium')
             return res.status(200).send(lowPriorityTasks)
         }
         else if(priority=='high'){
-            var lowPriorityTasks=tasksList.filter((item)=> item.priority =='high')
+            var lowPriorityTasks=taskLists.filter((item)=> item.priority =='high')
             return res.status(200).send(lowPriorityTasks)
         }
         else{
-            return res.status(200).send(tasksList)
+            return res.status(200).send(taskLists)
         }
-
     }
-    res.status(200).send(taskLists)
-});
-
+})
 /* ...........
 api:getTasks
 method: get
