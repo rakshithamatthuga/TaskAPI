@@ -69,13 +69,15 @@ resource: Info
 
 var welcomeMessage="Welcome to Task Management Which includes, creating, getting, updating and searching tasks"
 app.get('/home',(req,res)=>{
-      res.status(200).send("Welcome t Task Management API")
+      res.status(200).send(welcomeMessage)
 });
+
 
 /* ...........
 api:getTasks
 method: get
 resource: tasks
+queryparams: sortBy=asc or desc
 */
 
 app.get('/tasks', (req,res)=>{
@@ -125,12 +127,14 @@ app.get('/tasks', (req,res)=>{
     }
 });
 
+
 /* ...........
 api:sortByPriority
 method: get
 resource: tasks/priority
-params: :level
+params: :level:low or high or medium
 */
+
 app.get('/tasks/priority/:level',(req,res)=>{
     let priority=req.params.level
     if(priority){
@@ -151,12 +155,14 @@ app.get('/tasks/priority/:level',(req,res)=>{
         }
     }
 })
+
 /* ...........
 api:getTasks
 method: get
 resource: tasks
 params: Task Id
 */
+
 app.get('/tasks/:id',(req,res)=>{
     var taskId= parseInt(req.params.id);
     const taskInfo = taskLists.find(task => task.id === taskId);
@@ -167,11 +173,13 @@ app.get('/tasks/:id',(req,res)=>{
     }  
 });
 
+
 /* ...........
 api:createTask
 method: POST
 resource: /tasks
 */
+
 app.post("/tasks",(req,res)=> {
      let newTask = req.body;
      if(!newTask.title || !newTask.description || !newTask.completed || !newTask.priority){
@@ -192,12 +200,14 @@ app.post("/tasks",(req,res)=> {
      }
     });
 
+
 /* ...........
 api:DeleteTaskBy Id
 method: POST
 resource: /tasks
 params: Task Id
-*/  
+*/ 
+
 app.delete( '/tasks/:id', (req,res)=>{
     var originalSize=taskLists.length
     var objWithIdIndex=parseInt(req.params.id)
@@ -213,11 +223,14 @@ app.delete( '/tasks/:id', (req,res)=>{
             res.status(404).send( {'message':'No such Task exists'} ).end()
     }
     });
+
+
 /* ...........
 api:UpdateTask Id
 method: PUT
 resource: /tasks/Task Id
 params: Task Id
+body: title or description or completed or priority
 */  
 app.put('/tasks/:id', (req, res) => {
     const taskId = parseInt(req.params.id);
@@ -237,6 +250,9 @@ app.put('/tasks/:id', (req, res) => {
             }
             if (updatedTask.completed !== undefined && typeof updatedTask.completed === 'boolean') {
                 taskToUpdate.completed = updatedTask.completed;
+            }
+            if (updatedTask.priority) {
+                taskToUpdate.priority = updatedTask.priority;
             }
             return res.status(200).send({ 'message': 'Updated' });
         } else {
